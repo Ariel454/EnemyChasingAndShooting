@@ -5,18 +5,13 @@ using UnityEngine.UI;
 
 public class Jugador : MonoBehaviour
 {
-    public float vidaActual = 1.0f; // Inicialmente a 1 para representar la vida completa
+    public GameObject textoGameOverParent;
+    public TMPro.TextMeshProUGUI TextoGameOver;
+    public float vidaTotal = 1.0f; // Total de vida
+
+    float vidaActual; // Variable para almacenar la vida actual
+    private int disparosRestantes = 10; // Número de disparos restantes antes de quedarse sin vida
     public Image barraVida; // Asegúrate de asignar la referencia al objeto Image de la barra de vida en el Inspector
-
-    void Start()
-    {
-        // Tu código de inicio, si es necesario
-    }
-
-    void Update()
-    {
-        // Tu código de actualización, si es necesario
-    }
 
     void OnCollisionEnter(Collision collision)
     {
@@ -26,19 +21,40 @@ public class Jugador : MonoBehaviour
         }
     }
 
+
+
     void RecibirDanio()
     {
-        vidaActual -= 0.1f; // Restar 0.1 a la vida actual
-
-        // Calcular el valor de la barra de vida después de recibir daño
-        float nuevoValorBarra = vidaActual / 1.0f; // 1.0f representa la vida completa
-
-        // Actualizar la barra de vida visualmente con interpolación (lerp)
-        barraVida.fillAmount = Mathf.Lerp(barraVida.fillAmount, nuevoValorBarra, Time.deltaTime * 5); // Ajusta el valor 5 según la velocidad de la interpolación que desees
-
-        if (vidaActual <= 0)
+        if (disparosRestantes > 0)
         {
-            // Aquí puedes hacer que el juego se detenga o que el personaje muera.
+            float reduccionPorDisparo = vidaTotal / 10.0f; // Calcula la cantidad de reducción por disparo
+            vidaActual -= reduccionPorDisparo; // Reduce la vida
+            disparosRestantes--;
+
+            ActualizarBarraVida(); // Actualiza la barra de vida
+
+            if (vidaActual <= 0)
+            {
+                MostrarTextoGameOver(); // Mostrar Game Over solo si la vida se ha agotado
+            }
         }
+    }
+
+    void ActualizarBarraVida()
+    {
+        // Calcula el valor de la barra de vida después de recibir daño
+        float nuevoValorBarra = vidaActual / vidaTotal;
+
+        // Actualiza la barra de vida visualmente
+        barraVida.fillAmount = nuevoValorBarra;
+    }
+
+    void MostrarTextoGameOver()
+    {
+        // Activa el objeto de juego que contiene el TextMeshProUGUI
+        textoGameOverParent.SetActive(true);
+
+        // Pausa el juego
+        Time.timeScale = 0f;
     }
 }

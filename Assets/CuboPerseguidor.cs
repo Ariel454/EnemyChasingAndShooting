@@ -25,8 +25,13 @@ public class CuboPerseguidor : MonoBehaviour
     public int puntosDeVida = 100;
 
 
-
     
+    private void Awake()
+    {
+        player = GameObject.Find("PlayerObj").transform;
+        agente = GetComponent<NavMeshAgent>();
+    }
+
     private void Awake()
     {
         player = GameObject.Find("PlayerObj").transform;
@@ -37,17 +42,15 @@ public class CuboPerseguidor : MonoBehaviour
     {
         agente.SetDestination(player.position);
             if (Time.time - tiempoUltimoDisparo >= intervaloDisparo)
-    {
-        Disparar();
-        tiempoUltimoDisparo = Time.time;
-    }
-    }
-
-    private void Patroling()
-    {
+        {
+            Disparar();
+            tiempoUltimoDisparo = Time.time;
+        }
     }
 
-    void Disparar()
+
+
+  void Disparar()
     {
         GameObject bola = Instantiate(bolaPrefab, puntoDisparoCabeza.position, puntoDisparoCabeza.rotation);
         Rigidbody rb = bola.GetComponent<Rigidbody>();
@@ -61,34 +64,6 @@ public class CuboPerseguidor : MonoBehaviour
         // Destruye la bola después del tiempo de vida especificado
         Destroy(bola, tiempoVidaBola);
     }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Bala")) // Ajusta la etiqueta de las balas
-        {
-            RecibirDanio();
-        }
-    }
-
-
-    void RecibirDanio()
-    {
-        vidaActual -= 0.1f; // Restar 0.1 a la vida actual
-
-        // Calcular el valor de la barra de vida después de recibir daño
-        float nuevoValorBarra = vidaActual / 1.0f; // 1.0f representa la vida completa
-
-        // Actualizar la barra de vida visualmente con interpolación (lerp)
-        barraVida.fillAmount = Mathf.Lerp(barraVida.fillAmount, nuevoValorBarra, Time.deltaTime * 5); // Ajusta el valor 5 según la velocidad de la interpolación que desees
-
-        if (vidaActual <= 0)
-        {
-            // Aquí puedes hacer que el juego se detenga o que el personaje muera.
-        }
-    }
-
-
-
 
 
 }
