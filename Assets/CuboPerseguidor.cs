@@ -32,12 +32,6 @@ public class CuboPerseguidor : MonoBehaviour
         agente = GetComponent<NavMeshAgent>();
     }
 
-    private void Awake()
-    {
-        player = GameObject.Find("PlayerObj").transform;
-        agente = GetComponent<NavMeshAgent>();
-    }
-
     void Update()
     {
         agente.SetDestination(player.position);
